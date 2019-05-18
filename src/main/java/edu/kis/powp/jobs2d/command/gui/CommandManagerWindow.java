@@ -4,14 +4,20 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.kis.powp.appbase.Application;
 import edu.kis.powp.appbase.gui.WindowComponent;
+import edu.kis.powp.jobs2d.command.DriverCommand;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
+import edu.kis.powp.jobs2d.command.manager.SingleCommand;
+import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.observer.Subscriber;
 
 public class CommandManagerWindow extends JFrame implements WindowComponent {
@@ -19,6 +25,8 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
 	private DriverCommandManager commandManager;
 
 	private JTextArea currentCommandField;
+	private Application application;
+	private JTextArea newCommand;
 
 	private String observerListString;
 	private JTextArea observerListField;
@@ -28,7 +36,8 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
 	 */
 	private static final long serialVersionUID = 9204679248304669948L;
 
-	public CommandManagerWindow(DriverCommandManager commandManager) {
+	public CommandManagerWindow(DriverCommandManager commandManager, Application application) {
+		this.application = application;
 		this.setTitle("Command Manager");
 		this.setSize(400, 400);
 		Container content = this.getContentPane();
@@ -55,6 +64,24 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
 		c.weighty = 1;
 		content.add(currentCommandField, c);
 		updateCurrentCommandField();
+
+
+		newCommand = new JTextArea(5,20);
+		JScrollPane scrollPane = new JScrollPane(newCommand);
+		newCommand.setEditable(true);
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.gridx = 0;
+		c.weighty = 1;
+		content.add(scrollPane, c);
+
+		JButton btnAddCommand = new JButton("Add command");
+		btnAddCommand.addActionListener((ActionEvent e) -> this.addCommand());
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.gridx = 0;
+		c.weighty = 1;
+		content.add(btnAddCommand, c);
 
 		JButton btnClearCommand = new JButton("Clear command");
 		btnClearCommand.addActionListener((ActionEvent e) -> this.clearCommand());
@@ -97,6 +124,24 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
 			observerListString = "No observers loaded";
 
 		observerListField.setText(observerListString);
+	}
+
+	private void addCommand() {
+		String newCommandText = newCommand.getText();
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
+			// TODO: BARTEK WYBIERZ PLS
+//			List<DriverCommand> driverCommands = singleCommands.stream().map(command -> command.getCommand()).collect(Collectors.toList());
+			List<DriverCommand> driverCommands = new ArrayList<>();
+			singleCommands.forEach(e -> {
+				driverCommands.add(e.getCommand());
+			});
+			DriverCommandManager manager = CommandsFeature.getDriverCommandManager();
+			manager.setCurrentCommand(driverCommands, "TopSecretCommand");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
