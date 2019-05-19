@@ -20,7 +20,7 @@ public class SingleCommand {
 
 
     public DriverCommand getCommand() {
-        if(commandName == "set") return new SetPositionCommand(x,y);
+        if(commandName.equalsIgnoreCase("set")) return new SetPositionCommand(x,y);
         return new OperateToCommand(x,y);
     }
 

@@ -131,16 +131,12 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
-			// TODO: BARTEK WYBIERZ PLS
-//			List<DriverCommand> driverCommands = singleCommands.stream().map(command -> command.getCommand()).collect(Collectors.toList());
 			List<DriverCommand> driverCommands = new ArrayList<>();
-			singleCommands.forEach(e -> {
-				driverCommands.add(e.getCommand());
-			});
+			singleCommands.forEach(e -> driverCommands.add(e.getCommand()));
 			DriverCommandManager manager = CommandsFeature.getDriverCommandManager();
 			manager.setCurrentCommand(driverCommands, "TopSecretCommand");
 		} catch (IOException e) {
-			e.printStackTrace();
+			currentCommandField.setText("Wrong JSON format");
 		}
 	}
 
