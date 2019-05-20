@@ -5,9 +5,11 @@ import edu.kis.powp.jobs2d.command.OperateToCommand;
 import edu.kis.powp.jobs2d.command.SetPositionCommand;
 
 public class SingleCommand {
-    public String commandName;
-    public int x;
-    public int y;
+
+    private String commandName;
+    private int x;
+    private int y;
+
     public SingleCommand() {
 
     }
@@ -18,15 +20,15 @@ public class SingleCommand {
         this.y = y;
     }
 
-
     public DriverCommand getCommand() {
-        if(commandName.equalsIgnoreCase("set")) return new SetPositionCommand(x,y);
-        return new OperateToCommand(x,y);
+        if (commandName.equalsIgnoreCase("set"))
+            return new SetPositionCommand(x, y);
+        return new OperateToCommand(x, y);
     }
 
     @Override
     public String toString() {
-        return commandName + " (" + x + ", " +  y + ")";
+        return commandName + " (" + x + ", " + y + ")";
     }
 }
 
