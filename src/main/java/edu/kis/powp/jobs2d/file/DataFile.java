@@ -2,6 +2,8 @@ package edu.kis.powp.jobs2d.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class DataFile {
@@ -33,6 +35,17 @@ public class DataFile {
 	}
 	
 	public void saveData() {
-		
+		File fnew=new File("data.txt");
+		FileWriter f2;
+
+		try 
+		{
+		    f2 = new FileWriter(fnew,false);
+		    f2.write("");  // <==== wrzucic tu stan zuzycia
+	
+		    f2.close();
+		} catch (IOException e) {
+		        e.printStackTrace();
+		} 
 	}
 }
