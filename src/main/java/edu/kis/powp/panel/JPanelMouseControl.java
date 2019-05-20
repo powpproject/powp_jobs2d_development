@@ -1,39 +1,48 @@
 package edu.kis.powp.panel;
 
 
-import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class JPanelMouseControl {
-    private Application application;
-    private JPanel jPanel;
-    private DriverManager driverManager;
+    private JPanel jPanel = null;
+    private DriverManager driverManager = null;
+    static private JPanelMouseControl instance;
 
-    public JPanelMouseControl(Application application, DriverManager driverManager) {
-        this.application = application;
-        this.driverManager=driverManager;
+    private JPanelMouseControl()
+    {
+        super();
     }
 
-    public void setupPanel(){
-        jPanel=application.getFreePanel();
+    public static JPanelMouseControl getInstance() {
+        if(instance == null)
+            instance = new JPanelMouseControl();
+        return instance;
+    }
 
+    public JPanelMouseControl setjPanel(JPanel jPanel) {
+        this.jPanel = jPanel;
+        return instance;
+    }
 
+    public JPanelMouseControl setDriverManager(DriverManager driverManager) {
+        this.driverManager = driverManager;
+        return instance;
+    }
+
+    public void startListener(){
         jPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
                 if(e.getButton()==1){
-                    driverManager.getCurrentDriver().setPosition((int) (e.getX()-(jPanel.getSize().getWidth()/2)),(int)(e.getY()-(jPanel.getSize().getHeight()/2)));
-
+                    driverManager.getCurrentDriver().setPosition(e.getX() - jPanel.getBounds().width/2, e.getY() - jPanel.getBounds().height/2);
                 }
                 else if(e.getButton()==3){
-                    driverManager.getCurrentDriver().operateTo((int)(e.getX()-(jPanel.getSize().getWidth()/2)),(int)(e.getY()-(jPanel.getSize().getHeight()/2)));
+
+                    driverManager.getCurrentDriver().operateTo(e.getX() - jPanel.getBounds().width/2, e.getY() - jPanel.getBounds().height/2);
                 }
             }
 
