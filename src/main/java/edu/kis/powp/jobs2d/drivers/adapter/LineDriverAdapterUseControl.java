@@ -21,13 +21,24 @@ public class LineDriverAdapterUseControl implements Job2dDriver {
 
     private void calculateDistance(int nextX, int nextY){
 
-        double currentDistance = sqrt((pow(nextX - this.prevX,2) + pow(nextY - this.prevY,2)));
-        this.distance += currentDistance;
+           double currentDistance = sqrt((pow(nextX - this.prevX,2) + pow(nextY - this.prevY,2)));
+           this.distance += currentDistance;
+}
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     @Override
     public void setPosition(int x, int y) {
         job2dDriver.setPosition(x,y);
+        this.prevX = x;
+        this.prevY = y;
+
     }
 
     @Override
@@ -35,5 +46,7 @@ public class LineDriverAdapterUseControl implements Job2dDriver {
         calculateDistance(x,y);
         System.out.println(distance);
         job2dDriver.operateTo(x,y);
+        this.prevY = y;
+        this.prevX = x;
     }
 }
