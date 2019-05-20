@@ -10,6 +10,7 @@ import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
+import edu.kis.powp.jobs2d.command.gui.ZoomManagerWindow;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
 import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectRunCurrentCommandOptionListener;
@@ -97,6 +98,16 @@ public class TestJobs2dApp {
 		application.addComponentMenuElement(Logger.class, "OFF logging", (ActionEvent e) -> logger.setLevel(Level.OFF));
 	}
 
+	private static void setupZoomWindow(Application application) {
+
+		ZoomManagerWindow zoomManagerWindow = new ZoomManagerWindow(CommandsFeature.getDriverCommandManager());
+		application.addWindowComponent("Zoom", zoomManagerWindow);
+
+		/*CommandManagerWindowCommandChangeObserver windowObserver = new CommandManagerWindowCommandChangeObserver(
+				commandManager);
+		CommandsFeature.getDriverCommandManager().getChangePublisher().addSubscriber(windowObserver);*/
+	}
+
 	/**
 	 * Launch the application.
 	 */
@@ -111,6 +122,7 @@ public class TestJobs2dApp {
 				setupDrivers(app);
 				setupPresetTests(app);
 				setupCommandTests(app);
+				setupZoomWindow(app);
 				setupLogger(app);
 				setupWindows(app);
 
