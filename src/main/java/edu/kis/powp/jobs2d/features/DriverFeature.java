@@ -5,7 +5,10 @@ import edu.kis.powp.jobs2d.Job2dDriver;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.SelectDriverMenuOptionListener;
 
-public class DriverFeature {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class DriverFeature implements PropertyChangeListener {
 
 	private static DriverManager driverManager = new DriverManager();
 	private static Application app;
@@ -35,11 +38,16 @@ public class DriverFeature {
 		app.addComponentMenuElement(DriverFeature.class, name, listener);
 	}
 
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		app.updateInfo(evt.getNewValue().toString());
+	}
+
 	/**
 	 * Update driver info.
 	 */
-	public static void updateDriverInfo() {
+	/*public static void updateDriverInfo() {
 		app.updateInfo(driverManager.getCurrentDriver().toString());
-	}
+	}*/
 
 }
