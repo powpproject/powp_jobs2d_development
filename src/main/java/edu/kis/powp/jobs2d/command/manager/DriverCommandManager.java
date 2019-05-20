@@ -43,6 +43,10 @@ public class DriverCommandManager {
 		return currentCommand;
 	}
 
+	public synchronized DriverCommand runCurrentCommand() {
+		return currentCommand;
+	}
+
 	public synchronized void clearCurrentCommand() {
 		currentCommand = null;
 	}
