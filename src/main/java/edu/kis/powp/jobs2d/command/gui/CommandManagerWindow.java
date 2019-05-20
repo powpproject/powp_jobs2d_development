@@ -6,7 +6,6 @@ import edu.kis.powp.appbase.gui.WindowComponent;
 import edu.kis.powp.jobs2d.command.DriverCommand;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
 import edu.kis.powp.jobs2d.command.manager.SingleCommand;
-import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.observer.Subscriber;
 
 import javax.swing.*;
@@ -98,11 +97,11 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         updateCurrentCommandField();
     }
 
-    public void updateCurrentCommandField() {
+    void updateCurrentCommandField() {
         currentCommandField.setText(commandManager.getCurrentCommandString());
     }
 
-    public void deleteObservers() {
+    private void deleteObservers() {
         commandManager.getChangePublisher().clearObservers();
         this.updateObserverListField();
     }
@@ -123,13 +122,10 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         String newCommandText = newCommand.getText();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>() {
-
-            });
+            List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
             List<DriverCommand> driverCommands = new ArrayList<>();
             singleCommands.forEach(e -> driverCommands.add(e.getCommand()));
-            DriverCommandManager manager = CommandsFeature.getDriverCommandManager();
-            manager.setCurrentCommand(driverCommands, "TopSecretCommand");
+            commandManager.setCurrentCommand(driverCommands, "TopSecretCommand");
         } catch (IOException e) {
             currentCommandField.setText("Wrong JSON format");
         }
