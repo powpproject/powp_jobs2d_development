@@ -10,15 +10,14 @@ import java.awt.event.MouseListener;
 public class JPanelMouseControl {
     private JPanel jPanel = null;
     private DriverManager driverManager = null;
-    static private JPanelMouseControl instance;
+    static private JPanelMouseControl instance = null;
 
-    private JPanelMouseControl()
-    {
+    private JPanelMouseControl() {
         super();
     }
 
     public static JPanelMouseControl getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new JPanelMouseControl();
         return instance;
     }
@@ -33,16 +32,15 @@ public class JPanelMouseControl {
         return instance;
     }
 
-    public void startListener(){
+    public void startListener() {
         jPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getButton()==1){
-                    driverManager.getCurrentDriver().setPosition(e.getX() - jPanel.getBounds().width/2, e.getY() - jPanel.getBounds().height/2);
-                }
-                else if(e.getButton()==3){
+                if (e.getButton() == 1) {
+                    driverManager.getCurrentDriver().setPosition(e.getX() - jPanel.getBounds().width / 2, e.getY() - jPanel.getBounds().height / 2);
+                } else if (e.getButton() == 3) {
 
-                    driverManager.getCurrentDriver().operateTo(e.getX() - jPanel.getBounds().width/2, e.getY() - jPanel.getBounds().height/2);
+                    driverManager.getCurrentDriver().operateTo(e.getX() - jPanel.getBounds().width / 2, e.getY() - jPanel.getBounds().height / 2);
                 }
             }
 
