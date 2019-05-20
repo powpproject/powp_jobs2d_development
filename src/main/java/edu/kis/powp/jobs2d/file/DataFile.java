@@ -9,7 +9,7 @@ import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapterUseControl;
 
 public class DataFile {
 	LineDriverAdapterUseControl driver;
-	private int currentLevel;
+	private double currentLevel;
 
 	public DataFile() throws FileNotFoundException {
 		getDataFromFile();
@@ -26,7 +26,7 @@ public class DataFile {
 
         String dataString = in.nextLine();
             
-        setCurrentLevel(Integer.parseInt(dataString));
+        setCurrentLevel(Double.parseDouble((dataString)));
 	}
 	
 	public void saveData() {
@@ -36,7 +36,7 @@ public class DataFile {
 		try 
 		{
 		    f2 = new FileWriter(fnew,false);
-		    f2.write((int) driver.getDistance()); 
+		    f2.write(Double.toString(driver.getDistance())); 
 	
 		    f2.close();
 		} catch (IOException e) {
@@ -44,11 +44,12 @@ public class DataFile {
 		} 
 	}
 	
-	public int getCurrentLevel() {
+	public double getCurrentLevel() throws FileNotFoundException {
+		getDataFromFile();
 		return currentLevel;
 	}
 
-	public void setCurrentLevel(int currentLevel) {
-		this.currentLevel = currentLevel;
+	public void setCurrentLevel(double d) {
+		this.currentLevel = d;
 	}
 }

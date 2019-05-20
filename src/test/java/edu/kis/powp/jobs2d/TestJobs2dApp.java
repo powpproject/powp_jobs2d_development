@@ -2,6 +2,7 @@ package edu.kis.powp.jobs2d;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,8 +56,9 @@ public class TestJobs2dApp {
 	 * Setup driver manager, and set default Job2dDriver for application.
 	 * 
 	 * @param application Application context.
+	 * @throws FileNotFoundException 
 	 */
-	private static void setupDrivers(Application application) {
+	private static void setupDrivers(Application application) throws FileNotFoundException {
 		Job2dDriver loggerDriver = new LoggerDriver();
 		DriverFeature.addDriver("Logger driver", loggerDriver);
 
@@ -69,8 +71,6 @@ public class TestJobs2dApp {
 		driver = new LineDriverAdapterUseControl(new LineDriverAdapter(drawerController, LineFactory.getSpecialLine(), "special"));
 		DriverFeature.addDriver("Special line Simulator", driver);
 		DriverFeature.updateDriverInfo();
-		
-		DataFile dataFile = new DataFile((LineDriverAdapterUseControl) driver);
 	}
 
 	private static void setupWindows(Application application) {
@@ -113,7 +113,13 @@ public class TestJobs2dApp {
 				CommandsFeature.setupCommandManager();
 
 				DriverFeature.setupDriverPlugin(app);
-				setupDrivers(app);
+				
+				try {
+					setupDrivers(app);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
 				setupPresetTests(app);
 				setupCommandTests(app);
 				setupLogger(app);
