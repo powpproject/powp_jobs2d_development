@@ -6,9 +6,9 @@ import edu.kis.powp.jobs2d.command.SetPositionCommand;
 
 public class SingleCommand {
 
-    private String commandName;
-    private int x;
-    private int y;
+    public String commandName;
+    public int x;
+    public int y;
 
     public SingleCommand() {
 
