@@ -104,18 +104,16 @@ public class TestJobs2dApp {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				DriverFeature driverFeature = new DriverFeature();
 				Application app = new Application("Jobs 2D");
 				DrawerFeature.setupDrawerPlugin(app);
 				CommandsFeature.setupCommandManager();
 
-				driverFeature.setupDriverPlugin(app);
+				DriverFeature.setupDriverPlugin(app);
 				setupDrivers(app);
 				setupPresetTests(app);
 				setupCommandTests(app);
 				setupLogger(app);
 				setupWindows(app);
-				DriverManager.addPropertyChangeListener(driverFeature);
 
 				app.setVisibility(true);
 			}
