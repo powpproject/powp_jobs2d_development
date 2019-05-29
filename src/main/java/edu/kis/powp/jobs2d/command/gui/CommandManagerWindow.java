@@ -8,7 +8,7 @@ import edu.kis.powp.jobs2d.command.DriverCommand;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
 import edu.kis.powp.jobs2d.command.manager.SingleCommand;
 import edu.kis.powp.jobs2d.command.manager.SingleCommandList;
-import edu.kis.powp.observer.Subscriber;
+import edu.kis.powp.jobs2d.command.service.CommandService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,8 +24,9 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     private JTextArea currentCommandField;
     private JTextArea newCommand;
 
-    private String observerListString;
     private JTextArea observerListField;
+
+    private CommandService commandService = new CommandService();
 
     /**
      *
@@ -109,15 +110,7 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     }
 
     private void updateObserverListField() {
-        observerListString = "";
-        List<Subscriber> commandChangeSubscribers = commandManager.getChangePublisher().getSubscribers();
-        for (Subscriber observer : commandChangeSubscribers) {
-            observerListString += observer.toString() + System.lineSeparator();
-        }
-        if (commandChangeSubscribers.isEmpty())
-            observerListString = "No observers loaded";
-
-        observerListField.setText(observerListString);
+        observerListField.setText(commandService.updateObserver(commandManager));
     }
 
     private void addCommand() {
