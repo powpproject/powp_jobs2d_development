@@ -2,10 +2,12 @@ package edu.kis.powp.jobs2d.command.gui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import edu.kis.powp.appbase.gui.WindowComponent;
 import edu.kis.powp.jobs2d.command.DriverCommand;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
 import edu.kis.powp.jobs2d.command.manager.SingleCommand;
+import edu.kis.powp.jobs2d.command.manager.SingleCommandList;
 import edu.kis.powp.observer.Subscriber;
 
 import javax.swing.*;
@@ -121,14 +123,27 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     private void addCommand() {
         String newCommandText = newCommand.getText();
         ObjectMapper objectMapper = new ObjectMapper();
+        XmlMapper xmlMapper = new XmlMapper();
+        SingleCommandList sc = new SingleCommandList();
+        List<SingleCommand> singleCommands = new ArrayList<>();
         try {
-            List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
-            List<DriverCommand> driverCommands = new ArrayList<>();
-            singleCommands.forEach(e -> driverCommands.add(e.getCommand()));
-            commandManager.setCurrentCommand(driverCommands, "TopSecretCommand");
+            sc = xmlMapper.readValue(newCommandText, SingleCommandList.class);
+
+            singleCommands = objectMapper.convertValue(sc.getSingleCommand(), new TypeReference<List<SingleCommand>>(){});
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
         } catch (IOException e) {
             currentCommandField.setText("Wrong JSON format");
         }
+
+        List<DriverCommand> driverCommands = new ArrayList<>();
+        singleCommands.forEach(e -> driverCommands.add(e.getCommand()));
+        commandManager.setCurrentCommand(driverCommands, "TopSecretCommand");
     }
 
     @Override

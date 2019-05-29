@@ -1,0 +1,12 @@
+<SingleCommandList>
+    <command>
+        <commandName>set</commandName>
+        <x>1</x>
+        <y>2</y>
+    </command>
+    <command>
+        <commandName>operate</commandName>
+        <x>10</x>
+        <y>200</y>
+    </command>
+</SingleCommandList>
