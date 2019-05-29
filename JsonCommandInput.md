@@ -1,4 +1,4 @@
-# Przykładowy format JSON wymaganego w CommangManager
+# Przykładowy format JSON wymaganego w CommandManager
 
 [
     {
