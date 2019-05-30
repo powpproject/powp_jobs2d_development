@@ -3,6 +3,7 @@
 Nazwy comend, tj set oraz operate opisane w JsonCommandInput.md
 
 
+```xml
 <SingleCommandList>
     <command>
         <commandName>set</commandName>
@@ -30,3 +31,4 @@ Nazwy comend, tj set oraz operate opisane w JsonCommandInput.md
             <y>0</y>
     </command>
 </SingleCommandList>
+```
