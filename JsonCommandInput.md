@@ -1,5 +1,6 @@
 # Przykładowy format JSON wymaganego w CommandManager
 
+```json
 [
     {
       "commandName": "set",
@@ -12,6 +13,7 @@
       "y": "10"
     }
 ]
+```
 
 Opcja "commandName" : "set" umożliwia wskazanie miejsce, w którym rozpocznie się rysowanie.
 
@@ -23,6 +25,7 @@ Jeśli w ciągu poleceń podamy operację set, to wskaźnik przeskoczy do miejsc
 
 
 Przykład:
+```json
 [
     {
       "commandName": "set",
@@ -50,5 +53,5 @@ Przykład:
       "y": "0"
     }
 ]
-
+```
 Powyższe polecenie narysuje nam kwadrat.
