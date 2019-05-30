@@ -31,7 +31,7 @@ public class CommandService {
         ObjectMapper objectMapper = new ObjectMapper();
         List<SingleCommand> singleCommands;
 
-        char charDefiningFormat = readCommand.charAt(0);
+        char charDefiningFormat = readCommand.trim().charAt(0);
 
         switch (charDefiningFormat) {
             case '<': {
