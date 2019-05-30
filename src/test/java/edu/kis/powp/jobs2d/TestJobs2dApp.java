@@ -2,6 +2,7 @@ package edu.kis.powp.jobs2d;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
+import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapterUseControl;
 import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectRunCurrentCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigure2OptionListener;
@@ -19,6 +21,8 @@ import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
 import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
+import edu.kis.powp.panel.JPanelMouseControl;
+import edu.kis.powp.jobs2d.file.DataFile;
 
 public class TestJobs2dApp {
 	private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -54,17 +58,19 @@ public class TestJobs2dApp {
 	 * Setup driver manager, and set default Job2dDriver for application.
 	 * 
 	 * @param application Application context.
+	 * @throws FileNotFoundException 
 	 */
-	private static void setupDrivers(Application application) {
+	private static void setupDrivers(Application application) throws FileNotFoundException {
 		Job2dDriver loggerDriver = new LoggerDriver();
 		DriverFeature.addDriver("Logger driver", loggerDriver);
 
 		DrawPanelController drawerController = DrawerFeature.getDrawerController();
-		Job2dDriver driver = new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic");
+		//Job2dDriver driver = new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic");
+		Job2dDriver driver = new LineDriverAdapterUseControl(new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic"));
 		DriverFeature.addDriver("Line Simulator", driver);
 		DriverFeature.getDriverManager().setCurrentDriver(driver);
 
-		driver = new LineDriverAdapter(drawerController, LineFactory.getSpecialLine(), "special");
+		driver = new LineDriverAdapterUseControl(new LineDriverAdapter(drawerController, LineFactory.getSpecialLine(), "special"));
 		DriverFeature.addDriver("Special line Simulator", driver);
 		//DriverFeature.updateDriverInfo();
 	}
@@ -109,11 +115,19 @@ public class TestJobs2dApp {
 				CommandsFeature.setupCommandManager();
 
 				DriverFeature.setupDriverPlugin(app);
-				setupDrivers(app);
+				
+				try {
+					setupDrivers(app);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
 				setupPresetTests(app);
 				setupCommandTests(app);
 				setupLogger(app);
 				setupWindows(app);
+
+				JPanelMouseControl.engage(app.getFreePanel(), DriverFeature.getDriverManager());
 
 				app.setVisibility(true);
 			}
