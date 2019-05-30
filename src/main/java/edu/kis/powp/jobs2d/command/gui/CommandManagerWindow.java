@@ -78,7 +78,7 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         commandList.add("1st command");
         commandList.add("2nd command");
         JComboBox commandComboBox = new JComboBox(commandList.toArray());
-        commandComboBox.addActionListener((ActionEvent e) -> this.displayTextFieldWithSelectedValueFromComboBox(commandComboBox.getSelectedItem().toString()));
+        commandComboBox.addActionListener((ActionEvent e) -> this.fillTextArea(commandComboBox.getSelectedItem().toString()));
         content.add(commandComboBox, c);
 
         JButton btnAddCommand = new JButton("Add command");
@@ -132,7 +132,7 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         this.updateObserverListField();
     }
     
-    void displayTextFieldWithSelectedValueFromComboBox(String selectedItem) {
+    void fillTextArea(String selectedItem) {
     	this.newCommand.setText(null);
     	this.newCommand.replaceSelection(selectedItem);
     }
