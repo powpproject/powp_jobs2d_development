@@ -8,33 +8,27 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class JPanelMouseControl {
-    private JPanel jPanel = null;
-    private DriverManager driverManager = null;
-    static private JPanelMouseControl instance = null;
-    private int LEFT_MOUSE_BUTTON = 1;
-    private int RIGHT_MOUSE_BUTTON = 3;
+    private static JPanel jPanel = null;
+    private static DriverManager driverManager = null;
+    private static int LEFT_MOUSE_BUTTON = 1;
+    private static int RIGHT_MOUSE_BUTTON = 3;
 
-    private JPanelMouseControl() {
-        super();
+    public static void engage(JPanel jPanel, DriverManager driverManager)
+    {
+        setjPanel(jPanel);
+        setDriverManager(driverManager);
+        startListener();
     }
 
-    public static JPanelMouseControl getInstance() {
-        if (instance == null)
-            instance = new JPanelMouseControl();
-        return instance;
+    private static void setjPanel(JPanel currentJPanel) {
+        jPanel = currentJPanel;
     }
 
-    public JPanelMouseControl setjPanel(JPanel jPanel) {
-        this.jPanel = jPanel;
-        return instance;
+    private static void setDriverManager(DriverManager currentDriverManager) {
+        driverManager = currentDriverManager;
     }
 
-    public JPanelMouseControl setDriverManager(DriverManager driverManager) {
-        this.driverManager = driverManager;
-        return instance;
-    }
-
-    public void startListener() {
+    private static void startListener() {
         jPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

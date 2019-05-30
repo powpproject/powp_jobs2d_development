@@ -126,10 +126,7 @@ public class TestJobs2dApp {
 				setupLogger(app);
 				setupWindows(app);
 
-				JPanelMouseControl.getInstance()
-						.setjPanel(app.getFreePanel())
-						.setDriverManager(DriverFeature.getDriverManager())
-						.startListener();
+				JPanelMouseControl.engage(app.getFreePanel(), DriverFeature.getDriverManager());
 
 				app.setVisibility(true);
 			}
