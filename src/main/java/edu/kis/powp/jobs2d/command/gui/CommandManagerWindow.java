@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CommandManagerWindow extends JFrame implements WindowComponent {
@@ -71,6 +72,14 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         c.gridx = 0;
         c.weighty = 1;
         content.add(scrollPane, c);
+        
+        //TO-DO
+        List<String> commandList = new LinkedList<String>();
+        commandList.add("1st command");
+        commandList.add("2nd command");
+        JComboBox commandComboBox = new JComboBox(commandList.toArray());
+        commandComboBox.addActionListener((ActionEvent e) -> this.displayTextFieldWithSelectedValueFromComboBox(commandComboBox.getSelectedItem().toString()));
+        content.add(commandComboBox, c);
 
         JButton btnAddCommand = new JButton("Add command");
         btnAddCommand.addActionListener((ActionEvent e) -> this.addCommand());
@@ -121,6 +130,11 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     private void deleteObservers() {
         commandManager.getChangePublisher().clearObservers();
         this.updateObserverListField();
+    }
+    
+    void displayTextFieldWithSelectedValueFromComboBox(String selectedItem) {
+    	this.newCommand.setText(null);
+    	this.newCommand.replaceSelection(selectedItem);
     }
 
     private void updateObserverListField() {
