@@ -2,6 +2,8 @@ package edu.kis.powp.jobs2d;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,9 +11,13 @@ import java.util.logging.Logger;
 import edu.kis.legacy.drawer.panel.DrawPanelController;
 import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
+import edu.kis.powp.jobs2d.command.formatter.Formatter;
+import edu.kis.powp.jobs2d.command.formatter.JsonFormatter;
+import edu.kis.powp.jobs2d.command.formatter.XmlFormatter;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
-import edu.kis.powp.jobs2d.drivers.DriverManager;
+import edu.kis.powp.jobs2d.command.service.CommandService;
+import edu.kis.powp.jobs2d.command.service.ICommandService;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapterUseControl;
 import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
@@ -22,7 +28,6 @@ import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
 import edu.kis.powp.panel.JPanelMouseControl;
-import edu.kis.powp.jobs2d.file.DataFile;
 
 public class TestJobs2dApp {
 	private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -77,7 +82,13 @@ public class TestJobs2dApp {
 
 	private static void setupWindows(Application application) {
 
-		CommandManagerWindow commandManager = new CommandManagerWindow(CommandsFeature.getDriverCommandManager());
+		List<Formatter> formatterList = new ArrayList<>();
+		formatterList.add(new JsonFormatter());
+		formatterList.add(new XmlFormatter());
+
+		ICommandService commandService = new CommandService(CommandsFeature.getDriverCommandManager(), formatterList);
+
+		CommandManagerWindow commandManager = new CommandManagerWindow(commandService);
 		application.addWindowComponent("Command Manager", commandManager);
 
 		CommandManagerWindowCommandChangeObserver windowObserver = new CommandManagerWindowCommandChangeObserver(
