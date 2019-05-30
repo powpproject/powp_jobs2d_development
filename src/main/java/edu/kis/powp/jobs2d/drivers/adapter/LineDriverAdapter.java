@@ -11,27 +11,30 @@ public class LineDriverAdapter implements Job2dDriver {
 	private ILine line;
 	private int startX = 0, startY = 0;
 	private String name;
+	private int scale;
 
 	private DrawPanelController drawController;
 
-	public LineDriverAdapter(DrawPanelController drawController, ILine line, String name) {
+	public LineDriverAdapter(DrawPanelController drawController, ILine line, String name, int scale) {
 		super();
 		this.drawController = drawController;
 		this.line = line;
 		this.name = name;
+		this.scale = scale;
 	}
+
 
 	@Override
 	public void setPosition(int x, int y) {
-		this.startX = x;
-		this.startY = y;
+		this.startX = x/scale;
+		this.startY = y/scale;
 	}
 
 	@Override
 	public void operateTo(int x, int y) {
 		line.setStartCoordinates(this.startX, this.startY);
 		this.setPosition(x, y);
-		line.setEndCoordinates(x, y);
+		line.setEndCoordinates(x/scale, y/scale);
 
 		drawController.drawLine(line);
 	}
