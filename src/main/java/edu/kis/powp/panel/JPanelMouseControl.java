@@ -11,8 +11,8 @@ public class JPanelMouseControl {
     private JPanel jPanel = null;
     private DriverManager driverManager = null;
     static private JPanelMouseControl instance = null;
-    private int LEFT_MOUE_BUTTON = 1;
-    private int RIGHT_MOUE_BUTTON = 3;
+    private int LEFT_MOUSE_BUTTON = 1;
+    private int RIGHT_MOUSE_BUTTON = 3;
 
     private JPanelMouseControl() {
         super();
@@ -38,9 +38,9 @@ public class JPanelMouseControl {
         jPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == LEFT_MOUE_BUTTON) {
+                if (e.getButton() == LEFT_MOUSE_BUTTON) {
                     driverManager.getCurrentDriver().setPosition(e.getX() - jPanel.getBounds().width / 2, e.getY() - jPanel.getBounds().height / 2);
-                } else if (e.getButton() == RIGHT_MOUE_BUTTON) {
+                } else if (e.getButton() == RIGHT_MOUSE_BUTTON) {
                     driverManager.getCurrentDriver().operateTo(e.getX() - jPanel.getBounds().width / 2, e.getY() - jPanel.getBounds().height / 2);
                 }
             }
