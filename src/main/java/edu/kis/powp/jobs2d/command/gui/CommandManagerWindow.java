@@ -1,8 +1,7 @@
 package edu.kis.powp.jobs2d.command.gui;
 
 import edu.kis.powp.appbase.gui.WindowComponent;
-import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
-import edu.kis.powp.jobs2d.command.service.CommandService;
+import edu.kis.powp.jobs2d.command.service.ICommandService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,27 +10,24 @@ import java.io.IOException;
 
 public class CommandManagerWindow extends JFrame implements WindowComponent {
 
-    private DriverCommandManager commandManager;
-
     private JTextArea currentCommandField;
     private JTextArea newCommand;
 
     private JTextArea observerListField;
 
-    private CommandService commandService = new CommandService();
+    private ICommandService commandService;
 
     /**
      *
      */
     private static final long serialVersionUID = 9204679248304669948L;
 
-    public CommandManagerWindow(DriverCommandManager commandManager) {
+    public CommandManagerWindow(ICommandService commandService) {
         this.setTitle("Command Manager");
         this.setSize(400, 400);
         Container content = this.getContentPane();
         content.setLayout(new GridBagLayout());
-
-        this.commandManager = commandManager;
+        this.commandService = commandService;
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -88,27 +84,26 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     }
 
     private void clearCommand() {
-        commandManager.clearCurrentCommand();
+        commandService.clearCurrentCommand();
         updateCurrentCommandField();
     }
 
     void updateCurrentCommandField() {
-        currentCommandField.setText(commandManager.getCurrentCommandString());
+        currentCommandField.setText(commandService.getCurrentCommandString());
     }
 
     private void deleteObservers() {
-        commandManager.getChangePublisher().clearObservers();
+        commandService.clearObservers();
         this.updateObserverListField();
     }
 
     private void updateObserverListField() {
-        observerListField.setText(commandService.updateObserver(commandManager));
+        observerListField.setText(commandService.updateObserver());
     }
 
     private void addCommand() {
-        String newCommandText = newCommand.getText();
         try {
-            commandManager.setCurrentCommand(commandService.manageLoadedCommands(newCommandText), "TopSecretCommand");
+            commandService.setCurrentCommand(newCommand.getText());
         } catch (IOException e) {
             currentCommandField.setText("Wrong command format");
         }
