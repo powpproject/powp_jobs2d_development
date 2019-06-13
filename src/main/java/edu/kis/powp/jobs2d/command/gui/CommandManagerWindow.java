@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kis.powp.appbase.gui.WindowComponent;
 import edu.kis.powp.jobs2d.command.DriverCommand;
+import edu.kis.powp.jobs2d.command.manager.CommandHistory;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
 import edu.kis.powp.jobs2d.command.manager.SingleCommand;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
@@ -21,13 +22,16 @@ import java.util.List;
 
 public class CommandManagerWindow extends JFrame implements WindowComponent {
 
-    private DriverCommandManager commandManager;
+    public static List<String> commandList = new ArrayList<String>();
+
+	private DriverCommandManager commandManager;
 
     private JTextArea currentCommandField;
     private JTextArea newCommand;
 
     private String observerListString;
     private JTextArea observerListField;
+    private JComboBox commandComboBox;
     DriverManager driverManager;
 
     /**
@@ -74,11 +78,13 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         content.add(scrollPane, c);
         
         //TO-DO
-        List<String> commandList = new LinkedList<String>();
-        commandList.add("1st command");
-        commandList.add("2nd command");
-        JComboBox commandComboBox = new JComboBox(commandList.toArray());
-        commandComboBox.addActionListener((ActionEvent e) -> this.fillTextArea(commandComboBox.getSelectedItem().toString()));
+        /*List<String> commandList = new LinkedList<String>();
+        for(int i=0;i<CommandHistory.getAmount()-1;i++)
+        	commandList.add(i+" command");*/
+        //DefaultComboBoxModel model = new DefaultComboBoxModel( commandList.toArray() );
+        commandComboBox = new JComboBox(commandList.toArray());
+        //commandComboBox.setModel( model );
+        commandComboBox.addActionListener((ActionEvent e) -> commandManager.setCurrentCommand(CommandHistory.getCommand(commandComboBox.getSelectedIndex())));
         content.add(commandComboBox, c);
 
         JButton btnAddCommand = new JButton("Add command");
@@ -156,7 +162,10 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
             List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
             List<DriverCommand> driverCommands = new ArrayList<>();
             singleCommands.forEach(e -> driverCommands.add(e.getCommand()));
-            commandManager.setCurrentCommand(driverCommands, "TopSecretCommand");
+            commandManager.setCurrentCommand(driverCommands, "AddedCommand");
+            commandComboBox.removeAllItems();
+            for(int i=0;i<commandList.size()-1;i++)
+            	commandComboBox.addItem(commandList.get(i));
         } catch (IOException e) {
             currentCommandField.setText("Wrong JSON format");
         }
