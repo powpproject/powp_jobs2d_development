@@ -1,5 +1,6 @@
 package edu.kis.powp.jobs2d.features;
 
+import edu.kis.powp.jobs2d.command.manager.CommandInsertObserver;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
 import edu.kis.powp.jobs2d.command.manager.LoggerCommandChangeObserver;
 
@@ -12,6 +13,9 @@ public class CommandsFeature {
 
 		LoggerCommandChangeObserver loggerObserver = new LoggerCommandChangeObserver();
 		commandManager.getChangePublisher().addSubscriber(loggerObserver);
+		
+		CommandInsertObserver commandObserver = new CommandInsertObserver();
+		commandManager.getChangePublisher().addSubscriber(commandObserver);
 	}
 
 	/**
