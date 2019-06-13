@@ -2,15 +2,24 @@ package edu.kis.powp.jobs2d;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.kis.legacy.drawer.panel.DrawPanelController;
 import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
+import edu.kis.powp.jobs2d.command.formatter.Formatter;
+import edu.kis.powp.jobs2d.command.formatter.JsonFormatter;
+import edu.kis.powp.jobs2d.command.formatter.XmlFormatter;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
+import edu.kis.powp.jobs2d.command.service.CommandService;
+import edu.kis.powp.jobs2d.command.service.ICommandService;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
+import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapterUseControl;
 import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectRunCurrentCommandOptionListener;
 import edu.kis.powp.jobs2d.events.SelectTestFigure2OptionListener;
@@ -18,6 +27,7 @@ import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
 import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
+import edu.kis.powp.panel.JPanelMouseControl;
 
 public class TestJobs2dApp {
 	private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -53,24 +63,34 @@ public class TestJobs2dApp {
 	 * Setup driver manager, and set default Job2dDriver for application.
 	 * 
 	 * @param application Application context.
+	 * @throws FileNotFoundException 
 	 */
-	private static void setupDrivers(Application application) {
+	private static void setupDrivers(Application application) throws FileNotFoundException {
 		Job2dDriver loggerDriver = new LoggerDriver();
 		DriverFeature.addDriver("Logger driver", loggerDriver);
 
 		DrawPanelController drawerController = DrawerFeature.getDrawerController();
-		Job2dDriver driver = new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic");
+		//Job2dDriver driver = new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic");
+		Job2dDriver driver = new LineDriverAdapterUseControl(new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic"));
 		DriverFeature.addDriver("Line Simulator", driver);
 		DriverFeature.getDriverManager().setCurrentDriver(driver);
 
-		driver = new LineDriverAdapter(drawerController, LineFactory.getSpecialLine(), "special");
+		driver = new LineDriverAdapterUseControl(new LineDriverAdapter(drawerController, LineFactory.getSpecialLine(), "special"));
 		DriverFeature.addDriver("Special line Simulator", driver);
-		DriverFeature.updateDriverInfo();
+		//DriverFeature.updateDriverInfo();
 	}
 
 	private static void setupWindows(Application application) {
 
+		
+		List<Formatter> formatterList = new ArrayList<>();
+		formatterList.add(new JsonFormatter());
+		formatterList.add(new XmlFormatter());
+
+		ICommandService commandService = new CommandService(CommandsFeature.getDriverCommandManager(), formatterList);
+
 		CommandManagerWindow commandManager = new CommandManagerWindow(CommandsFeature.getDriverCommandManager(),DriverFeature.getDriverManager());
+
 		application.addWindowComponent("Command Manager", commandManager);
 
 		CommandManagerWindowCommandChangeObserver windowObserver = new CommandManagerWindowCommandChangeObserver(
@@ -108,11 +128,19 @@ public class TestJobs2dApp {
 				CommandsFeature.setupCommandManager();
 
 				DriverFeature.setupDriverPlugin(app);
-				setupDrivers(app);
+				
+				try {
+					setupDrivers(app);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
 				setupPresetTests(app);
 				setupCommandTests(app);
 				setupLogger(app);
 				setupWindows(app);
+
+				JPanelMouseControl.engage(app.getFreePanel(), DriverFeature.getDriverManager());
 
 				app.setVisibility(true);
 			}

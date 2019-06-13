@@ -1,8 +1,7 @@
 package edu.kis.powp.jobs2d.command.gui;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kis.powp.appbase.gui.WindowComponent;
+
 import edu.kis.powp.jobs2d.command.DriverCommand;
 import edu.kis.powp.jobs2d.command.manager.CommandHistory;
 import edu.kis.powp.jobs2d.command.manager.DriverCommandManager;
@@ -11,6 +10,8 @@ import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
 import edu.kis.powp.observer.Subscriber;
+import edu.kis.powp.jobs2d.command.service.ICommandService;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,22 +23,23 @@ import java.util.List;
 
 public class CommandManagerWindow extends JFrame implements WindowComponent {
 
+	  private DriverCommandManager commandManager;
     public static List<String> commandList = new ArrayList<String>();
-
-	private DriverCommandManager commandManager;
 
     private JTextArea currentCommandField;
     private JTextArea newCommand;
 
-    private String observerListString;
     private JTextArea observerListField;
     private JComboBox commandComboBox;
     DriverManager driverManager;
+
+    private ICommandService commandService;
 
     /**
      *
      */
     private static final long serialVersionUID = 9204679248304669948L;
+
 
     public CommandManagerWindow(DriverCommandManager commandManager, DriverManager driverManager) {
         this.driverManager=driverManager;
@@ -45,8 +47,7 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
         this.setSize(400, 400);
         Container content = this.getContentPane();
         content.setLayout(new GridBagLayout());
-
-        this.commandManager = commandManager;
+        this.commandService = commandService;
 
         GridBagConstraints c = new GridBagConstraints();
 
@@ -125,16 +126,16 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     }
 
     private void clearCommand() {
-        commandManager.clearCurrentCommand();
+        commandService.clearCurrentCommand();
         updateCurrentCommandField();
     }
 
     void updateCurrentCommandField() {
-        currentCommandField.setText(commandManager.getCurrentCommandString());
+        currentCommandField.setText(commandService.getCurrentCommandString());
     }
 
     private void deleteObservers() {
-        commandManager.getChangePublisher().clearObservers();
+        commandService.clearObservers();
         this.updateObserverListField();
     }
     
@@ -144,20 +145,10 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
     }
 
     private void updateObserverListField() {
-        observerListString = "";
-        List<Subscriber> commandChangeSubscribers = commandManager.getChangePublisher().getSubscribers();
-        for (Subscriber observer : commandChangeSubscribers) {
-            observerListString += observer.toString() + System.lineSeparator();
-        }
-        if (commandChangeSubscribers.isEmpty())
-            observerListString = "No observers loaded";
-
-        observerListField.setText(observerListString);
+        observerListField.setText(commandService.updateObserver());
     }
 
     private void addCommand() {
-        String newCommandText = newCommand.getText();
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             List<SingleCommand> singleCommands = objectMapper.readValue(newCommandText, new TypeReference<List<SingleCommand>>(){});
             List<DriverCommand> driverCommands = new ArrayList<>();
@@ -166,8 +157,9 @@ public class CommandManagerWindow extends JFrame implements WindowComponent {
             commandComboBox.removeAllItems();
             for(int i=0;i<commandList.size()-1;i++)
             	commandComboBox.addItem(commandList.get(i));
+            commandService.setCurrentCommand(newCommand.getText());
         } catch (IOException e) {
-            currentCommandField.setText("Wrong JSON format");
+            currentCommandField.setText("Wrong command format");
         }
     }
 
