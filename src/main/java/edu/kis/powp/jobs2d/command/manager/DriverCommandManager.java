@@ -26,6 +26,7 @@ public class DriverCommandManager {
 		changePublisher.notifyObservers();
 	}
 
+
 	/**
 	 * Set current command.
 	 * 
@@ -34,6 +35,11 @@ public class DriverCommandManager {
 	 */
 	public synchronized void setCurrentCommand(List<DriverCommand> commandList, String name) {
 		setCurrentCommand(new ICompoundCommand() {
+
+			@Override
+			public void accept(CommandVisitor commandVisitor) {
+				commandVisitor.visit(this);
+			}
 
 			List<DriverCommand> driverCommands = commandList;
 

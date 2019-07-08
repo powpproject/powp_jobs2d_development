@@ -11,13 +11,11 @@ import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
-import edu.kis.powp.jobs2d.events.SelectLoadSecretCommandOptionListener;
-import edu.kis.powp.jobs2d.events.SelectRunCurrentCommandOptionListener;
-import edu.kis.powp.jobs2d.events.SelectTestFigure2OptionListener;
-import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
+import edu.kis.powp.jobs2d.events.*;
 import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
+import edu.kis.powp.jobs2d.transformators.ScalerCommandTransformator;
 
 public class TestJobs2dApp {
 	private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -35,8 +33,15 @@ public class TestJobs2dApp {
 
 		application.addTest("Figure Joe 1", selectTestFigureOptionListener);
 		application.addTest("Figure Joe 2", selectTestFigure2OptionListener);
+
 	}
 
+	private static void setupZoom(Application application)
+	{
+		application.addComponentMenu(ScalerCommandTransformator.class, "Zoom");
+		application.addComponentMenuElement(ScalerCommandTransformator.class, "Zoom In", new SelectScaleOptionListener(2));
+		application.addComponentMenuElement(ScalerCommandTransformator.class, "Zoom Out", new SelectScaleOptionListener(0.5));
+	}
 	/**
 	 * Setup test using driver commands in context.
 	 * 
@@ -44,9 +49,10 @@ public class TestJobs2dApp {
 	 */
 	private static void setupCommandTests(Application application) {
 		application.addTest("Load secret command", new SelectLoadSecretCommandOptionListener());
-
+		application.addTest("Load Figure Jane", new SelectLoadFigureJaneOptionListener());
+		application.addTest("Load Figure Joe 1", new SelectLoadFigureJoeScript1OptionListener());
+		application.addTest("Load Figure Joe 2", new SelectLoadFigureJoeScript2OptionListener());
 		application.addTest("Run command", new SelectRunCurrentCommandOptionListener(DriverFeature.getDriverManager()));
-
 	}
 
 	/**
@@ -113,6 +119,7 @@ public class TestJobs2dApp {
 				setupCommandTests(app);
 				setupLogger(app);
 				setupWindows(app);
+				setupZoom(app);
 
 				app.setVisibility(true);
 			}
